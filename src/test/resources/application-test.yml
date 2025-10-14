@@ -1,0 +1,17 @@
+data:
+  loader:
+    enabled: false
+
+spring:
+  cache:
+    type: none
+
+solr:
+  base:
+    url: http://localhost:8983/solr
+  collection: jobtitles-test
+
+logging:
+  level:
+    root: WARN
+    com.bet99.exercise.jobsearch: INFO

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="jobtitles" version="1.6">
+    <!-- Field Types -->
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true"/>
+    <fieldType name="long" class="solr.LongPointField" docValues="true"/>
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+
+    <!-- Text field type with language-specific analysis -->
+    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+        <analyzer type="index">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- English text field -->
+    <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+            <filter class="solr.EnglishPossessiveFilterFactory"/>
+            <filter class="solr.PorterStemFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+            <filter class="solr.EnglishPossessiveFilterFactory"/>
+            <filter class="solr.PorterStemFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- French text field -->
+    <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="lang/stopwords_fr.txt" ignoreCase="true"/>
+            <filter class="solr.ElisionFilterFactory" articles="lang/contractions_fr.txt" ignoreCase="true"/>
+            <filter class="solr.FrenchLightStemFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" words="lang/stopwords_fr.txt" ignoreCase="true"/>
+            <filter class="solr.ElisionFilterFactory" articles="lang/contractions_fr.txt" ignoreCase="true"/>
+            <filter class="solr.FrenchLightStemFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- Fields -->
+    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+    <field name="noc_code" type="string" indexed="true" stored="true" required="true"/>
+    <field name="title_en" type="text_en" indexed="true" stored="true"/>
+    <field name="title_fr" type="text_fr" indexed="true" stored="true"/>
+    <field name="description_en" type="text_en" indexed="true" stored="true"/>
+    <field name="description_fr" type="text_fr" indexed="true" stored="true"/>
+    <field name="category" type="string" indexed="true" stored="true"/>
+    <field name="skill_level" type="string" indexed="true" stored="true"/>
+    <field name="_version_" type="long" indexed="false" stored="false"/>
+
+    <!-- Unique Key -->
+    <uniqueKey>id</uniqueKey>
+</schema>
