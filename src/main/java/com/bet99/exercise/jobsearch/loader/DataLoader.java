@@ -156,7 +156,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private List<JobTitle> loadJobTitlesFromElements(Map<String, ClassificationData> classifications) throws Exception {
-        var jobTitleSet = new ConcurrentHashMap<String, JobTitle>(28000); // Pre-size for known capacity
+        var jobTitleSet = new ConcurrentHashMap<String, JobTitle>(28000);
         var idCounter = new AtomicInteger(1);
 
         try (var reader = new BufferedReader(
@@ -178,7 +178,6 @@ public class DataLoader implements CommandLineRunner {
             var fields = parseCsvLine(line);
             if (fields.length < 5) return;
 
-            String elementType = fields[3].trim();
             String jobTitleText = fields[4].trim();
 
             if (jobTitleText.isEmpty()) return;

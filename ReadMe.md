@@ -65,25 +65,70 @@ Download from [Statistics Canada NOC 2021](https://www.statcan.gc.ca/en/subjects
 - `noc_2021_version_1.0__elements.csv` (44,037 rows)
 
 Place in: `src/main/resources/data/`
+## Docker Setup (Recommended)
 
-### 2. Start with Docker (Recommended)
+### Prerequisites
+- Docker Desktop installed
+- Docker Compose v2.0+
 
+### Quick Start
+
+1. **Clone the repository**
 ```bash
-# Clone and navigate
-git clone <repo-url>
-cd job-title-search
-
-# Place CSV files
-mkdir -p src/main/resources/data
-cp ~/Downloads/noc_*.csv src/main/resources/data/
-
-# Start services (Solr + Redis + App)
-docker-compose up --build
-
-# Wait ~2 minutes for auto data loading
+   git clone https://github.com/kannanArchitect/JobTitleSearchEngine.git
+   cd JobTitleSearchEngine
 ```
 
-### 3. Verify Setup
+2. **Start services**
+```bash
+   docker-compose up -d --build
+```
+
+3. **Setup Solr schema** (one-time setup)
+```bash
+   # Wait for Solr to start (30 seconds)
+   sleep 30
+   
+   # Run setup script
+   bash setup-solr-docker.sh
+```
+
+4. **Verify**
+   - Application: http://localhost:8080/api/v1/jobtitles/health
+   - Solr Admin: http://localhost:8983/solr
+   - Test Search: http://localhost:8080/api/v1/jobtitles/search?query=developer&language=en
+
+5. **View logs**
+```bash
+   docker-compose logs -f app
+```
+
+### Stop Services
+```bash
+docker-compose down
+```
+
+### Clean Reset
+```bash
+docker-compose down -v
+docker-compose up -d
+bash setup-solr-docker.sh
+```
+
+
+
+### 5. Add .dockerignore
+```
+target/
+.mvn/
+*.log
+*.class
+.git/
+.idea/
+*.iml
+node_modules/
+
+### 6. Verify 
 
 ```bash
 # Test search

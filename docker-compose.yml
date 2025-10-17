@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Apache Solr Service
   solr:
     image: solr:9.4
     container_name: job-search-solr
@@ -9,11 +8,9 @@ services:
       - "8983:8983"
     volumes:
       - solr_data:/var/solr
-      - ./solr-config:/opt/solr/server/solr/configsets/jobtitles:ro
     command:
       - solr-precreate
       - jobtitles
-      - /opt/solr/server/solr/configsets/jobtitles
     environment:
       - SOLR_HEAP=512m
     healthcheck:
@@ -25,13 +22,12 @@ services:
     networks:
       - job-search-network
 
-  # Redis Cache Service
   redis:
     image: redis:7-alpine
     container_name: job-search-redis
     ports:
       - "6379:6379"
-    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
     volumes:
       - redis_data:/data
     healthcheck:
@@ -43,7 +39,6 @@ services:
     networks:
       - job-search-network
 
-  # Spring Boot Application
   app:
     build:
       context: .
@@ -57,6 +52,7 @@ services:
       - SOLR_COLLECTION=jobtitles
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - DATA_LOADER_ENABLED=true
     depends_on:
       solr:
         condition: service_healthy
@@ -67,7 +63,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      start_period: 90s
     networks:
       - job-search-network
     restart: unless-stopped

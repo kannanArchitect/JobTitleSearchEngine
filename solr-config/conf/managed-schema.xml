@@ -5,54 +5,34 @@
     <fieldType name="long" class="solr.LongPointField" docValues="true"/>
     <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
 
-    <!-- Text field type with language-specific analysis -->
-    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
-        <analyzer type="index">
-            <tokenizer class="solr.StandardTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
-            <filter class="solr.ASCIIFoldingFilterFactory"/>
-        </analyzer>
-        <analyzer type="query">
-            <tokenizer class="solr.StandardTokenizerFactory"/>
-            <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
-            <filter class="solr.ASCIIFoldingFilterFactory"/>
-        </analyzer>
-    </fieldType>
-
-    <!-- English text field -->
+    <!-- Simplified English text field (no stopwords file needed) -->
     <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
         <analyzer type="index">
             <tokenizer class="solr.StandardTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
             <filter class="solr.EnglishPossessiveFilterFactory"/>
             <filter class="solr.PorterStemFilterFactory"/>
         </analyzer>
         <analyzer type="query">
             <tokenizer class="solr.StandardTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
             <filter class="solr.EnglishPossessiveFilterFactory"/>
             <filter class="solr.PorterStemFilterFactory"/>
         </analyzer>
     </fieldType>
 
-    <!-- French text field -->
+    <!-- Simplified French text field (no stopwords file needed) -->
     <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100">
         <analyzer type="index">
             <tokenizer class="solr.StandardTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.StopFilterFactory" words="lang/stopwords_fr.txt" ignoreCase="true"/>
-            <filter class="solr.ElisionFilterFactory" articles="lang/contractions_fr.txt" ignoreCase="true"/>
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
             <filter class="solr.FrenchLightStemFilterFactory"/>
         </analyzer>
         <analyzer type="query">
             <tokenizer class="solr.StandardTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory"/>
-            <filter class="solr.StopFilterFactory" words="lang/stopwords_fr.txt" ignoreCase="true"/>
-            <filter class="solr.ElisionFilterFactory" articles="lang/contractions_fr.txt" ignoreCase="true"/>
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
             <filter class="solr.FrenchLightStemFilterFactory"/>
         </analyzer>
     </fieldType>

@@ -33,19 +33,23 @@ public class JobTitleRepository {
             throws SolrServerException, IOException {
 
         var solrQuery = new SolrQuery();
-        solrQuery.setQuery(query.trim());
-        solrQuery.set("defType", "edismax");
-        solrQuery.set("mm", "2<-1 5<-2 6<90%");
 
+        // Simple wildcard search (no fuzzy for now)
+        String searchQuery = "*" + query.toLowerCase() + "*";
 
-        String qf = switch (language) {
-            case "fr" -> "title_fr^3 description_fr";
-            case "en" -> "title_en^3 description_en";
-            default -> "title_en^3 title_fr^3 description_en description_fr";
-        };
+        // Build query based on language
+        if (language.equals("fr")) {
+            solrQuery.setQuery("title_fr:" + searchQuery + " OR description_fr:" + searchQuery);
+        } else if (language.equals("en")) {
+            solrQuery.setQuery("title_en:" + searchQuery + " OR description_en:" + searchQuery);
+        } else {
+            solrQuery.setQuery(
+                    "title_en:" + searchQuery + " OR title_fr:" + searchQuery +
+                            " OR description_en:" + searchQuery + " OR description_fr:" + searchQuery
+            );
+        }
 
-        solrQuery.set("qf", qf);
-        solrQuery.setFields("id", "noc_code", "title_en", "title_fr", "category", "skill_level");
+        solrQuery.setFields("*", "score");
         solrQuery.setStart(start);
         solrQuery.setRows(rows);
 
